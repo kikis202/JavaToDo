@@ -142,18 +142,20 @@ public class addTaskView extends javax.swing.JFrame {
             pst = conn.prepareStatement(sql);
             pst.setString(1, uzdNosaukums.getText());
             pst.setString(2, uzdApraksts.getText());
-            pst.setString(3, (String) datumaIevade.getToolTipText()); 
-            pst.setString(4, (String) prioritateIevade.getToolTipText());
+            pst.setString(3, String.valueOf(datumaIevade.getValue())); 
+            pst.setString(4, String.valueOf(prioritateIevade.getValue()));
             
             pst.execute();
             JOptionPane.showMessageDialog(null, "Uzdevums pievienots");
             
-            rs.close();
-            pst.close();
+            if (rs != null) rs.close();
+            if (pst != null) pst.close();
         }
         catch(Exception e){
             JOptionPane.showMessageDialog(null, e);
         }
+        dispose();
+        updateTable();
     }//GEN-LAST:event_pogaSaglabatActionPerformed
 
     private void uzdNosaukumsKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_uzdNosaukumsKeyTyped

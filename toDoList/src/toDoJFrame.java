@@ -31,7 +31,12 @@ public class toDoJFrame extends javax.swing.JFrame {
         setResizable(false);
         this.setTitle("Uzdevumi");
         
+        Object col[] = {"Uzdevums","Apraksts","Datums","Prioritāte"};        
+        model.setColumnIdentifiers(col);
+        Tabula.setModel(model);
         conn = toDoJFrame.ConnectDb();
+        
+        updateTable();
     }
 
     
@@ -57,7 +62,7 @@ public class toDoJFrame extends javax.swing.JFrame {
 
         newTask = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        Tabula = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -75,7 +80,7 @@ public class toDoJFrame extends javax.swing.JFrame {
         });
         getContentPane().add(newTask, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 550, -1, -1));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        Tabula.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -83,7 +88,7 @@ public class toDoJFrame extends javax.swing.JFrame {
                 "Uzdevums", "Apraksts", "Datums", "Prioritāte"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(Tabula);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 520, -1));
 
@@ -103,6 +108,27 @@ public class toDoJFrame extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
+    public void updateTable(){
+        String sql = "Select Uzdevums,Apraksts,Datums,Prioritāte from toDoSQL";
+        
+        try{
+            pst = conn.prepareStatement(sql);
+            rs = pst.executeQuery();
+            Object[] kolonuDati = new Object[4];
+            
+            while(rs.next()){
+                kolonuDati[0] = rs.getString("Uzdevums");
+                kolonuDati[1] = rs.getString("Apraksts");
+                kolonuDati[2] = rs.getString("Datums");
+                kolonuDati[3] = rs.getString("Prioritāte");
+                model.addRow(kolonuDati);
+            }
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -136,8 +162,8 @@ public class toDoJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable Tabula;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JButton newTask;
     // End of variables declaration//GEN-END:variables
 }
