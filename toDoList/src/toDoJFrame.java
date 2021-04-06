@@ -1,5 +1,8 @@
 
 import java.awt.Color;
+import java.sql.*;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -13,16 +16,36 @@ import java.awt.Color;
  */
 public class toDoJFrame extends javax.swing.JFrame {
 
+    Connection conn = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+    DefaultTableModel model = new DefaultTableModel();
+    
+    
     /**
      * Creates new form toDoJFrame
      */
-    public toDoJFrame() {
+    public toDoJFrame(){
         initComponents();
         getContentPane().setBackground(Color.gray);
         setResizable(false);
         this.setTitle("Uzdevumi");
+        
+        conn = toDoJFrame.ConnectDb();
     }
 
+    
+    public static Connection ConnectDb(){
+        try{
+            Class.forName("org.sqlite.JDBC");
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:toDoSQL.db");
+            return conn;
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+            return null;
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -33,8 +56,16 @@ public class toDoJFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         newTask = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         newTask.setText("Jauns uzdevums");
         newTask.addActionListener(new java.awt.event.ActionListener() {
@@ -42,31 +73,32 @@ public class toDoJFrame extends javax.swing.JFrame {
                 newTaskActionPerformed(evt);
             }
         });
+        getContentPane().add(newTask, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 550, -1, -1));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(220, Short.MAX_VALUE)
-                .addComponent(newTask)
-                .addGap(100, 100, 100))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(406, Short.MAX_VALUE)
-                .addComponent(newTask)
-                .addGap(129, 129, 129))
-        );
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Uzdevums", "Apraksts", "Datums", "Prioritāte"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 520, -1));
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void newTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newTaskActionPerformed
         addTaskView s = new addTaskView();
         s.setVisible(true);
     }//GEN-LAST:event_newTaskActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments
@@ -104,6 +136,8 @@ public class toDoJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JButton newTask;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,5 +1,8 @@
 
 import java.awt.Color;
+import java.sql.*;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -13,6 +16,10 @@ import java.awt.Color;
  */
 public class addTaskView extends javax.swing.JFrame {
 
+    Connection conn = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+    DefaultTableModel model = new DefaultTableModel();
     /**
      * Creates new form addTaskView
      */
@@ -22,8 +29,20 @@ public class addTaskView extends javax.swing.JFrame {
         setResizable(false);
         this.setTitle("Jauns uzdevums");
         
+        conn = toDoJFrame.ConnectDb();
     }
 
+    public static Connection ConnectDb(){
+        try{
+            Class.forName("org.sqlite.JDBC");
+            Connection conn = DriverManager.getConnection("jdbc:sqlite:toDoSQL.db");
+            return conn;
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+            return null;
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -47,20 +66,33 @@ public class addTaskView extends javax.swing.JFrame {
         datumaIevade = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setText("Uzdevuma nosaukums");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, -1, -1));
 
         uzdNosaukums.setColumns(20);
         uzdNosaukums.setRows(5);
+        uzdNosaukums.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                uzdNosaukumsKeyTyped(evt);
+            }
+        });
         jScrollPane1.setViewportView(uzdNosaukums);
 
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 31, 142, -1));
+
         jLabel3.setText("Apraksts");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(147, 11, -1, -1));
 
         uzdApraksts.setColumns(20);
         uzdApraksts.setRows(5);
         jScrollPane2.setViewportView(uzdApraksts);
 
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 31, 142, -1));
+
         jLabel5.setText("Datums");
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(324, 11, -1, -1));
 
         pogaAtcelt.setText("Atcelt");
         pogaAtcelt.addActionListener(new java.awt.event.ActionListener() {
@@ -68,6 +100,7 @@ public class addTaskView extends javax.swing.JFrame {
                 pogaAtceltActionPerformed(evt);
             }
         });
+        getContentPane().add(pogaAtcelt, new org.netbeans.lib.awtextra.AbsoluteConstraints(523, 56, 75, -1));
 
         pogaSaglabat.setText("Saglabāt");
         pogaSaglabat.addActionListener(new java.awt.event.ActionListener() {
@@ -75,76 +108,25 @@ public class addTaskView extends javax.swing.JFrame {
                 pogaSaglabatActionPerformed(evt);
             }
         });
+        getContentPane().add(pogaSaglabat, new org.netbeans.lib.awtextra.AbsoluteConstraints(523, 85, -1, -1));
 
         prioritateIevade.setModel(new javax.swing.SpinnerNumberModel(1, 1, 5, 1));
+        getContentPane().add(prioritateIevade, new org.netbeans.lib.awtextra.AbsoluteConstraints(502, 31, 96, -1));
 
         jLabel6.setText("Prioritāte (1-5)");
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(502, 11, -1, -1));
 
         datumaIevade.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(1616621242197L), null, null, java.util.Calendar.DAY_OF_MONTH));
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(31, 31, 31)
-                        .addComponent(jLabel3)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(datumaIevade, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(prioritateIevade, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(pogaSaglabat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(pogaAtcelt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(pogaAtcelt)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pogaSaglabat)
-                        .addGap(11, 11, 11))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING))
-                                .addGap(12, 12, 12))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(datumaIevade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(prioritateIevade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
-        );
+        datumaIevade.setFocusable(false);
+        datumaIevade.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                datumaIevadeKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                datumaIevadeKeyTyped(evt);
+            }
+        });
+        getContentPane().add(datumaIevade, new org.netbeans.lib.awtextra.AbsoluteConstraints(324, 31, 160, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -154,8 +136,37 @@ public class addTaskView extends javax.swing.JFrame {
     }//GEN-LAST:event_pogaAtceltActionPerformed
 
     private void pogaSaglabatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pogaSaglabatActionPerformed
-        // TODO add your handling code here:
+        String sql = "INSERT INTO toDoSQL(Uzdevums,Apraksts,Datums,Prioritāte)VALUES(?,?,?,?)";
+        
+        try{
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, uzdNosaukums.getText());
+            pst.setString(2, uzdApraksts.getText());
+            pst.setString(3, (String) datumaIevade.getToolTipText()); 
+            pst.setString(4, (String) prioritateIevade.getToolTipText());
+            
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "Uzdevums pievienots");
+            
+            rs.close();
+            pst.close();
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+        }
     }//GEN-LAST:event_pogaSaglabatActionPerformed
+
+    private void uzdNosaukumsKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_uzdNosaukumsKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_uzdNosaukumsKeyTyped
+
+    private void datumaIevadeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_datumaIevadeKeyTyped
+        evt.consume();
+    }//GEN-LAST:event_datumaIevadeKeyTyped
+
+    private void datumaIevadeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_datumaIevadeKeyPressed
+        evt.consume();
+    }//GEN-LAST:event_datumaIevadeKeyPressed
 
     /**
      * @param args the command line arguments
