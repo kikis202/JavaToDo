@@ -162,7 +162,7 @@ public class toDoJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable Tabula;
+    public static javax.swing.JTable Tabula;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton newTask;
     // End of variables declaration//GEN-END:variables
