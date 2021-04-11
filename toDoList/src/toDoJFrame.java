@@ -1,6 +1,9 @@
 
 import java.awt.Color;
+import java.awt.Font;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -27,18 +30,23 @@ public class toDoJFrame extends javax.swing.JFrame {
      */
     public toDoJFrame(){
         initComponents();
-        getContentPane().setBackground(Color.gray);
-        setResizable(false);
         this.setTitle("Uzdevumi");
         
+        jDialog1.setTitle("Jauns uzdevums");
+        jDialog1.setSize(509, 630);
+        jDialog1.setResizable(false);
         Object col[] = {"Uzdevums","Apraksts","Datums","Prioritāte"};        
         model.setColumnIdentifiers(col);
         Tabula.setModel(model);
         conn = toDoJFrame.ConnectDb();
+        Tabula.getTableHeader().setFont(new Font("Arial", Font.BOLD, 24));
+        Tabula.getTableHeader().setBackground(Color.white);
+        
         
         updateTable();
     }
-
+    
+    
     
     public static Connection ConnectDb(){
         try{
@@ -60,9 +68,173 @@ public class toDoJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jDialog1 = new javax.swing.JDialog();
+        uzdNosPanelis = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        uzdNosaukums = new javax.swing.JTextArea();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        uzdApraksts = new javax.swing.JTextArea();
+        datums = new javax.swing.JLabel();
+        datumaIevade = new javax.swing.JSpinner();
+        proritate = new javax.swing.JLabel();
+        prioritateIevade = new javax.swing.JSpinner();
+        pogaAtcelt = new javax.swing.JButton();
+        pogaSaglabat = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        sodDatums = new javax.swing.JLabel();
         newTask = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         Tabula = new javax.swing.JTable();
+
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
+        jLabel1.setText("Uzdevuma nosaukums");
+
+        uzdNosaukums.setColumns(20);
+        uzdNosaukums.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        uzdNosaukums.setRows(5);
+        uzdNosaukums.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        uzdNosaukums.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                uzdNosaukumsKeyTyped(evt);
+            }
+        });
+        jScrollPane2.setViewportView(uzdNosaukums);
+
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
+        jLabel3.setText("Apraksts");
+
+        uzdApraksts.setColumns(20);
+        uzdApraksts.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        uzdApraksts.setRows(5);
+        uzdApraksts.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        jScrollPane3.setViewportView(uzdApraksts);
+
+        datums.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
+        datums.setText("Datums");
+
+        datumaIevade.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        datumaIevade.setModel(new javax.swing.SpinnerDateModel());
+        datumaIevade.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        datumaIevade.setFocusable(false);
+        datumaIevade.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                datumaIevadeKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                datumaIevadeKeyTyped(evt);
+            }
+        });
+
+        proritate.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
+        proritate.setText("Prioritāte");
+
+        prioritateIevade.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        prioritateIevade.setModel(new javax.swing.SpinnerNumberModel(1, 1, 5, 1));
+        prioritateIevade.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+
+        pogaAtcelt.setBackground(new java.awt.Color(255, 51, 0));
+        pogaAtcelt.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
+        pogaAtcelt.setForeground(new java.awt.Color(73, 73, 73));
+        pogaAtcelt.setText("Atcelt");
+        pogaAtcelt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pogaAtceltActionPerformed(evt);
+            }
+        });
+
+        pogaSaglabat.setBackground(new java.awt.Color(0, 204, 0));
+        pogaSaglabat.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
+        pogaSaglabat.setForeground(new java.awt.Color(73, 73, 73));
+        pogaSaglabat.setText("Saglabāt");
+        pogaSaglabat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pogaSaglabatActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
+        jLabel2.setText("Šodienas datums");
+
+        sodDatums.setFont(new java.awt.Font("Lucida Grande", 0, 22)); // NOI18N
+        sodDatums.setText("datums");
+
+        javax.swing.GroupLayout uzdNosPanelisLayout = new javax.swing.GroupLayout(uzdNosPanelis);
+        uzdNosPanelis.setLayout(uzdNosPanelisLayout);
+        uzdNosPanelisLayout.setHorizontalGroup(
+            uzdNosPanelisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(uzdNosPanelisLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(uzdNosPanelisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(uzdNosPanelisLayout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(sodDatums, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(uzdNosPanelisLayout.createSequentialGroup()
+                        .addGroup(uzdNosPanelisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(uzdNosPanelisLayout.createSequentialGroup()
+                                .addComponent(pogaAtcelt, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(pogaSaglabat, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane3)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(prioritateIevade)
+                            .addComponent(datumaIevade, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(uzdNosPanelisLayout.createSequentialGroup()
+                                .addGroup(uzdNosPanelisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(datums)
+                                    .addComponent(proritate)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel3))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())))
+        );
+        uzdNosPanelisLayout.setVerticalGroup(
+            uzdNosPanelisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(uzdNosPanelisLayout.createSequentialGroup()
+                .addGroup(uzdNosPanelisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(sodDatums))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addGap(3, 3, 3)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(datums)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(datumaIevade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(proritate)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(prioritateIevade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(uzdNosPanelisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pogaSaglabat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pogaAtcelt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
+        jDialog1.getContentPane().setLayout(jDialog1Layout);
+        jDialog1Layout.setHorizontalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(uzdNosPanelis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jDialog1Layout.setVerticalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(uzdNosPanelis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -70,15 +242,16 @@ public class toDoJFrame extends javax.swing.JFrame {
                 formWindowActivated(evt);
             }
         });
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        newTask.setBackground(new java.awt.Color(0, 204, 0));
+        newTask.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        newTask.setForeground(new java.awt.Color(73, 73, 73));
         newTask.setText("Jauns uzdevums");
         newTask.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newTaskActionPerformed(evt);
             }
         });
-        getContentPane().add(newTask, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 550, -1, -1));
 
         Tabula.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -88,22 +261,98 @@ public class toDoJFrame extends javax.swing.JFrame {
                 "Uzdevums", "Apraksts", "Datums", "Prioritāte"
             }
         ));
+        Tabula.setFocusable(false);
+        Tabula.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        Tabula.setRowHeight(25);
+        Tabula.setShowVerticalLines(false);
+        Tabula.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(Tabula);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 520, -1));
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(420, 420, 420)
+                .addComponent(newTask, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(jScrollPane1)
+                .addGap(10, 10, 10))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
+                .addGap(120, 120, 120)
+                .addComponent(newTask, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(4, 4, 4))
+        );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void newTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newTaskActionPerformed
-        addTaskView s = new addTaskView();
-        s.setVisible(true);
+        jDialog1.setVisible(true);
+        
+        /// Pievieno datumu
+        
+        Calendar timer = Calendar.getInstance();
+        timer.getTime();
+        SimpleDateFormat Tdate = new SimpleDateFormat("dd MMM yyyy");
+        sodDatums.setText(Tdate.format(timer.getTime()));
     }//GEN-LAST:event_newTaskActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         
     }//GEN-LAST:event_formWindowActivated
+
+    private void pogaSaglabatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pogaSaglabatActionPerformed
+        String sql = "INSERT INTO toDoSQL(Uzdevums,Apraksts,Datums,Prioritāte)VALUES(?,?,?,?)";
+
+        try{
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, uzdNosaukums.getText());
+            pst.setString(2, uzdApraksts.getText());
+            pst.setString(3, String.valueOf(datumaIevade.getValue()));
+            pst.setString(4, String.valueOf(prioritateIevade.getValue()));
+
+            pst.execute();
+
+            JOptionPane.showMessageDialog(null, "Uzdevums pievienots");
+
+            if (rs != null) rs.close();
+            if (pst != null) pst.close();
+
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+        }
+        while(Tabula.getRowCount() > 0){
+            model.removeRow(0);
+        }
+
+        jDialog1.setVisible(false);
+        updateTable();
+    }//GEN-LAST:event_pogaSaglabatActionPerformed
+
+    private void pogaAtceltActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pogaAtceltActionPerformed
+        jDialog1.setVisible(false);
+    }//GEN-LAST:event_pogaAtceltActionPerformed
+
+    private void datumaIevadeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_datumaIevadeKeyTyped
+        evt.consume();
+    }//GEN-LAST:event_datumaIevadeKeyTyped
+
+    private void datumaIevadeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_datumaIevadeKeyPressed
+        evt.consume();
+    }//GEN-LAST:event_datumaIevadeKeyPressed
+
+    private void uzdNosaukumsKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_uzdNosaukumsKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_uzdNosaukumsKeyTyped
 
     /**
      * @param args the command line arguments
@@ -163,7 +412,23 @@ public class toDoJFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JTable Tabula;
+    private javax.swing.JSpinner datumaIevade;
+    private javax.swing.JLabel datums;
+    private javax.swing.JDialog jDialog1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton newTask;
+    private javax.swing.JButton pogaAtcelt;
+    private javax.swing.JButton pogaSaglabat;
+    private javax.swing.JSpinner prioritateIevade;
+    private javax.swing.JLabel proritate;
+    private javax.swing.JLabel sodDatums;
+    private javax.swing.JTextArea uzdApraksts;
+    private javax.swing.JPanel uzdNosPanelis;
+    private javax.swing.JTextArea uzdNosaukums;
     // End of variables declaration//GEN-END:variables
 }
