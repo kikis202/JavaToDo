@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -35,7 +36,7 @@ public class toDoJFrame extends javax.swing.JFrame {
         jDialog1.setTitle("Jauns uzdevums");
         jDialog1.setSize(509, 630);
         jDialog1.setResizable(false);
-        Object col[] = {"Uzdevums","Apraksts","Datums","Prioritāte"};        
+        Object col[] = {"Uzdevums","Apraksts","Datums","Prioritāte","Uzdevums_ID"};        
         model.setColumnIdentifiers(col);
         Tabula.setModel(model);
         conn = toDoJFrame.ConnectDb();
@@ -87,6 +88,7 @@ public class toDoJFrame extends javax.swing.JFrame {
         newTask = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         Tabula = new javax.swing.JTable();
+        dzestPoga = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
         jLabel1.setText("Uzdevuma nosaukums");
@@ -242,6 +244,7 @@ public class toDoJFrame extends javax.swing.JFrame {
                 formWindowActivated(evt);
             }
         });
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         newTask.setBackground(new java.awt.Color(0, 204, 0));
         newTask.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
@@ -252,13 +255,14 @@ public class toDoJFrame extends javax.swing.JFrame {
                 newTaskActionPerformed(evt);
             }
         });
+        getContentPane().add(newTask, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 530, -1, -1));
 
         Tabula.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Uzdevums", "Apraksts", "Datums", "Prioritāte"
+                "Uzdevums", "Apraksts", "Datums", "Prioritāte", "Uzdevums_ID"
             }
         ));
         Tabula.setFocusable(false);
@@ -268,27 +272,18 @@ public class toDoJFrame extends javax.swing.JFrame {
         Tabula.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(Tabula);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(420, 420, 420)
-                .addComponent(newTask, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(jScrollPane1)
-                .addGap(10, 10, 10))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
-                .addGap(120, 120, 120)
-                .addComponent(newTask, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(4, 4, 4))
-        );
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 623, 413));
+
+        dzestPoga.setBackground(new java.awt.Color(0, 204, 0));
+        dzestPoga.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        dzestPoga.setForeground(new java.awt.Color(73, 73, 73));
+        dzestPoga.setText("Dzēst");
+        dzestPoga.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dzestPogaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(dzestPoga, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 530, 120, -1));
 
         pack();
         setLocationRelativeTo(null);
@@ -354,28 +349,57 @@ public class toDoJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_uzdNosaukumsKeyTyped
 
+    private void dzestPogaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dzestPogaActionPerformed
+        DefaultTableModel model = (DefaultTableModel) Tabula.getModel();
+        if(Tabula.getSelectedRow()==-1){
+            if(Tabula.getRowCount()==0){
+                JOptionPane.showMessageDialog(null, "Nav uzdevuma, ko dzēst", "Uzdevumi", JOptionPane.OK_OPTION);
+            }else{
+                JOptionPane.showMessageDialog(null, "Izvēlies uzdevumu, ko dzēst", "Uzdevumi", JOptionPane.OK_OPTION);
+            }
+        }else{
+            int rinda = Tabula.getSelectedRow();
+            String cell = (String) Tabula.getModel().getValueAt(rinda, 4);
+            String sql = "DELETE FROM toDoSQL where Uzdevums_ID = " + cell;
+            try{
+                pst = conn.prepareStatement(sql);
+                pst.execute();
+                JOptionPane.showMessageDialog(null, "Uzdevums izdzēsts");
+            }
+            catch(Exception e){
+                JOptionPane.showMessageDialog(null, e);
+            }
+            model.removeRow(Tabula.getSelectedRow());
+        }
+    }//GEN-LAST:event_dzestPogaActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public void updateTable(){
-        String sql = "Select Uzdevums,Apraksts,Datums,Prioritāte from toDoSQL";
+        String sql = "Select Uzdevums,Apraksts,Datums,Prioritāte,Uzdevums_ID from toDoSQL";
         
         try{
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
-            Object[] kolonuDati = new Object[4];
+            Object[] kolonuDati = new Object[5];
             
             while(rs.next()){
                 kolonuDati[0] = rs.getString("Uzdevums");
                 kolonuDati[1] = rs.getString("Apraksts");
                 kolonuDati[2] = rs.getString("Datums");
                 kolonuDati[3] = rs.getString("Prioritāte");
+                kolonuDati[4] = rs.getString("Uzdevums_ID");
+
                 model.addRow(kolonuDati);
             }
+                TableColumnModel tcm = Tabula.getColumnModel();
+                tcm.removeColumn( tcm.getColumn(4) );
         }
         catch(Exception e){
             JOptionPane.showMessageDialog(null, e);
         }
+        
     }
     
     public static void main(String args[]) {
@@ -414,6 +438,7 @@ public class toDoJFrame extends javax.swing.JFrame {
     public static javax.swing.JTable Tabula;
     private javax.swing.JSpinner datumaIevade;
     private javax.swing.JLabel datums;
+    private javax.swing.JButton dzestPoga;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
