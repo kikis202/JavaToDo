@@ -394,7 +394,9 @@ public class toDoJFrame extends javax.swing.JFrame {
                 model.addRow(kolonuDati);
             }
                 TableColumnModel tcm = Tabula.getColumnModel();
-                tcm.removeColumn( tcm.getColumn(4) );
+                if(tcm.getColumnCount()>4){
+                    tcm.removeColumn( tcm.getColumn(4) );
+                }
         }
         catch(Exception e){
             JOptionPane.showMessageDialog(null, e);
