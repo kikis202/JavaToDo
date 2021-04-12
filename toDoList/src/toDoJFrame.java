@@ -5,6 +5,7 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
@@ -43,7 +44,33 @@ public class toDoJFrame extends javax.swing.JFrame {
         Tabula.getTableHeader().setFont(new Font("Arial", Font.BOLD, 24));
         Tabula.getTableHeader().setBackground(Color.white);
         
-        
+        ///izkraso tabula rindas
+        Tabula.addMouseListener(new java.awt.event.MouseAdapter(){
+            public void mouseClicked(java.awt.event.MouseEvent e){
+                int rinda=Tabula.rowAtPoint(e.getPoint());
+                int vertiba = Integer.parseInt((String) Tabula.getValueAt(rinda, 3));
+                aprakstaLauks.setText(String.valueOf(Tabula.getModel().getValueAt(rinda, 1)));
+                
+                
+                switch(vertiba){
+                    case 5:
+                        Tabula.setSelectionBackground(Color.red);
+                        break;
+                    case 4:
+                        Tabula.setSelectionBackground(Color.orange);
+                        break;
+                    case 3:
+                        Tabula.setSelectionBackground(Color.yellow);
+                        break;
+                    case 2:
+                        Tabula.setSelectionBackground(Color.green);
+                        break;
+                    case 1:
+                        Tabula.setSelectionBackground(Color.blue);
+                        break;
+                }
+            }
+        });
         updateTable();
     }
     
@@ -85,11 +112,16 @@ public class toDoJFrame extends javax.swing.JFrame {
         pogaSaglabat = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         sodDatums = new javax.swing.JLabel();
-        newTask = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         Tabula = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        aprakstaLauks = new javax.swing.JTextArea();
+        jLabel4 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         dzestPoga = new javax.swing.JButton();
         labotPoga = new javax.swing.JButton();
+        newTask = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
         jLabel1.setText("Uzdevuma nosaukums");
@@ -240,24 +272,15 @@ public class toDoJFrame extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(794, 830));
+        setPreferredSize(new java.awt.Dimension(794, 830));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
                 formWindowActivated(evt);
             }
         });
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        newTask.setBackground(new java.awt.Color(0, 204, 0));
-        newTask.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        newTask.setForeground(new java.awt.Color(73, 73, 73));
-        newTask.setText("Jauns uzdevums");
-        newTask.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newTaskActionPerformed(evt);
-            }
-        });
-        getContentPane().add(newTask, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 530, -1, -1));
-
+        Tabula.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         Tabula.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -273,29 +296,120 @@ public class toDoJFrame extends javax.swing.JFrame {
         Tabula.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(Tabula);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 623, 413));
+        aprakstaLauks.setColumns(20);
+        aprakstaLauks.setRows(5);
+        jScrollPane4.setViewportView(aprakstaLauks);
 
-        dzestPoga.setBackground(new java.awt.Color(0, 204, 0));
+        jLabel4.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
+        jLabel4.setText("Uzdevuma apraksts: ");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addGap(11, 11, 11)
+                .addComponent(jScrollPane4)
+                .addGap(63, 63, 63))
+        );
+
+        dzestPoga.setBackground(new java.awt.Color(255, 51, 0));
         dzestPoga.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         dzestPoga.setForeground(new java.awt.Color(73, 73, 73));
         dzestPoga.setText("Dzēst");
+        dzestPoga.setBorder(null);
         dzestPoga.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dzestPogaActionPerformed(evt);
             }
         });
-        getContentPane().add(dzestPoga, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 530, 100, -1));
 
-        labotPoga.setBackground(new java.awt.Color(0, 204, 0));
+        labotPoga.setBackground(new java.awt.Color(255, 204, 51));
         labotPoga.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         labotPoga.setForeground(new java.awt.Color(73, 73, 73));
         labotPoga.setText("Labot");
+        labotPoga.setBorder(null);
         labotPoga.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 labotPogaActionPerformed(evt);
             }
         });
-        getContentPane().add(labotPoga, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 530, 100, -1));
+
+        newTask.setBackground(new java.awt.Color(0, 204, 0));
+        newTask.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        newTask.setForeground(new java.awt.Color(73, 73, 73));
+        newTask.setText("Jauns uzdevums");
+        newTask.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newTaskActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dzestPoga, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(labotPoga, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(newTask, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(210, Short.MAX_VALUE)
+                .addComponent(dzestPoga, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(labotPoga, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(newTask, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jScrollPane1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(9, 9, 9))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(64, 64, 64)))
+                .addContainerGap())
+        );
 
         pack();
         setLocationRelativeTo(null);
@@ -318,6 +432,8 @@ public class toDoJFrame extends javax.swing.JFrame {
         //vajag ievadīt pareizos value
         //datumaIevade.setValue();
         //prioritateIevade.setValue();
+        
+        datumaIevade.setEditor(new JSpinner.DateEditor(datumaIevade,"H:m dd/MM/yyyy"));
     }//GEN-LAST:event_newTaskActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
@@ -424,6 +540,8 @@ public class toDoJFrame extends javax.swing.JFrame {
         SimpleDateFormat Tdate = new SimpleDateFormat("dd MMM yyyy");
         sodDatums.setText(Tdate.format(timer.getTime()));
         
+        datumaIevade.setEditor(new JSpinner.DateEditor(datumaIevade,"H:m dd/MM/yyyy"));
+        
         //ievieot datus no tabulas
         int rinda = Tabula.getSelectedRow();
         String id = (String) Tabula.getModel().getValueAt(rinda, 4);
@@ -507,6 +625,7 @@ public class toDoJFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JTable Tabula;
+    private javax.swing.JTextArea aprakstaLauks;
     private javax.swing.JSpinner datumaIevade;
     private javax.swing.JLabel datums;
     private javax.swing.JButton dzestPoga;
@@ -514,9 +633,13 @@ public class toDoJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JButton labotPoga;
     private javax.swing.JButton newTask;
     private javax.swing.JButton pogaAtcelt;
