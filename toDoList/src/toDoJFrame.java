@@ -33,7 +33,7 @@ public class toDoJFrame extends javax.swing.JFrame {
         initComponents();
         this.setTitle("Uzdevumi");
         
-        jDialog1.setTitle("Jauns uzdevums");
+        
         jDialog1.setSize(509, 630);
         jDialog1.setResizable(false);
         Object col[] = {"Uzdevums","Apraksts","Datums","Prioritāte","Uzdevums_ID"};        
@@ -89,6 +89,7 @@ public class toDoJFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         Tabula = new javax.swing.JTable();
         dzestPoga = new javax.swing.JButton();
+        labotPoga = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
         jLabel1.setText("Uzdevuma nosaukums");
@@ -283,13 +284,25 @@ public class toDoJFrame extends javax.swing.JFrame {
                 dzestPogaActionPerformed(evt);
             }
         });
-        getContentPane().add(dzestPoga, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 530, 120, -1));
+        getContentPane().add(dzestPoga, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 530, 100, -1));
+
+        labotPoga.setBackground(new java.awt.Color(0, 204, 0));
+        labotPoga.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        labotPoga.setForeground(new java.awt.Color(73, 73, 73));
+        labotPoga.setText("Labot");
+        labotPoga.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                labotPogaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(labotPoga, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 530, 100, -1));
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void newTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newTaskActionPerformed
+        jDialog1.setTitle("Jauns uzdevums");
         jDialog1.setVisible(true);
         
         /// Pievieno datumu
@@ -298,6 +311,13 @@ public class toDoJFrame extends javax.swing.JFrame {
         timer.getTime();
         SimpleDateFormat Tdate = new SimpleDateFormat("dd MMM yyyy");
         sodDatums.setText(Tdate.format(timer.getTime()));
+        
+        //notīra lauciņus
+        uzdNosaukums.setText("");
+        uzdApraksts.setText("");
+        //vajag ievadīt pareizos value
+        //datumaIevade.setValue();
+        //prioritateIevade.setValue();
     }//GEN-LAST:event_newTaskActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
@@ -305,32 +325,53 @@ public class toDoJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowActivated
 
     private void pogaSaglabatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pogaSaglabatActionPerformed
-        String sql = "INSERT INTO toDoSQL(Uzdevums,Apraksts,Datums,Prioritāte)VALUES(?,?,?,?)";
+        if(jDialog1.getTitle().equals("Jauns uzdevums")){
+            String sql = "INSERT INTO toDoSQL(Uzdevums,Apraksts,Datums,Prioritāte)VALUES(?,?,?,?)";
 
-        try{
-            pst = conn.prepareStatement(sql);
-            pst.setString(1, uzdNosaukums.getText());
-            pst.setString(2, uzdApraksts.getText());
-            pst.setString(3, String.valueOf(datumaIevade.getValue()));
-            pst.setString(4, String.valueOf(prioritateIevade.getValue()));
+            try{
+                pst = conn.prepareStatement(sql);
+                pst.setString(1, uzdNosaukums.getText());
+                pst.setString(2, uzdApraksts.getText());
+                pst.setString(3, String.valueOf(datumaIevade.getValue()));
+                pst.setString(4, String.valueOf(prioritateIevade.getValue()));
 
-            pst.execute();
+                pst.execute();
 
-            JOptionPane.showMessageDialog(null, "Uzdevums pievienots");
+                JOptionPane.showMessageDialog(null, "Uzdevums pievienots");
 
-            if (rs != null) rs.close();
-            if (pst != null) pst.close();
+                if (rs != null) rs.close();
+                if (pst != null) pst.close();
 
-        }
-        catch(Exception e){
-            JOptionPane.showMessageDialog(null, e);
-        }
-        while(Tabula.getRowCount() > 0){
-            model.removeRow(0);
-        }
+            }
+            catch(Exception e){
+                JOptionPane.showMessageDialog(null, e);
+            }
+            while(Tabula.getRowCount() > 0){
+                model.removeRow(0);
+            }
 
-        jDialog1.setVisible(false);
-        updateTable();
+
+        }else if(jDialog1.getTitle().equals("Labot uzdevumu")){
+                int rinda = Tabula.getSelectedRow();
+                String id = (String) Tabula.getModel().getValueAt(rinda, 4);
+                String sql = "update toDoSQL set "
+                + "Uzdevums = '"+uzdNosaukums.getText()+"', "
+                + "Apraksts = '"+uzdApraksts.getText()+"', "
+                + "Datums = '"+String.valueOf(datumaIevade.getValue())+"', "
+                + "Prioritāte = '"+String.valueOf(prioritateIevade.getValue())+"' "
+                + "where Uzdevums_ID = "+id;
+                
+                try{
+                pst = conn.prepareStatement(sql);
+                pst.execute();
+                JOptionPane.showMessageDialog(null, "Uzdevums labots");
+                }
+                catch(Exception e){
+                JOptionPane.showMessageDialog(null, e);
+                }
+            }
+            jDialog1.setVisible(false);
+            updateTable();
     }//GEN-LAST:event_pogaSaglabatActionPerformed
 
     private void pogaAtceltActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pogaAtceltActionPerformed
@@ -359,8 +400,8 @@ public class toDoJFrame extends javax.swing.JFrame {
             }
         }else{
             int rinda = Tabula.getSelectedRow();
-            String cell = (String) Tabula.getModel().getValueAt(rinda, 4);
-            String sql = "DELETE FROM toDoSQL where Uzdevums_ID = " + cell;
+            String id = (String) Tabula.getModel().getValueAt(rinda, 4);
+            String sql = "DELETE FROM toDoSQL where Uzdevums_ID = " + id;
             try{
                 pst = conn.prepareStatement(sql);
                 pst.execute();
@@ -373,10 +414,38 @@ public class toDoJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_dzestPogaActionPerformed
 
+    private void labotPogaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_labotPogaActionPerformed
+        jDialog1.setTitle("Labot uzdevumu");
+        jDialog1.setVisible(true);
+        
+        //pievieno datumu
+        Calendar timer = Calendar.getInstance();
+        timer.getTime();
+        SimpleDateFormat Tdate = new SimpleDateFormat("dd MMM yyyy");
+        sodDatums.setText(Tdate.format(timer.getTime()));
+        
+        //ievieot datus no tabulas
+        int rinda = Tabula.getSelectedRow();
+        String id = (String) Tabula.getModel().getValueAt(rinda, 4);
+        uzdNosaukums.setText((String) Tabula.getModel().getValueAt(rinda, 0));
+        uzdApraksts.setText((String) Tabula.getModel().getValueAt(rinda, 1));
+        //vajag pārveidot value par pareizo tipu
+//        datumaIevade.setValue(Tabula.getModel().getValueAt(rinda, 2));
+//        prioritateIevade.setValue(Tabula.getModel().getValueAt(rinda, 3));
+               
+    }//GEN-LAST:event_labotPogaActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    
+    
+    
+    
     public void updateTable(){
+        DefaultTableModel dtm = (DefaultTableModel) Tabula.getModel();
+        dtm.setRowCount(0);
+        
         String sql = "Select Uzdevums,Apraksts,Datums,Prioritāte,Uzdevums_ID from toDoSQL";
         
         try{
@@ -448,6 +517,7 @@ public class toDoJFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JButton labotPoga;
     private javax.swing.JButton newTask;
     private javax.swing.JButton pogaAtcelt;
     private javax.swing.JButton pogaSaglabat;
