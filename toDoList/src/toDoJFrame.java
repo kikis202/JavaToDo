@@ -2,12 +2,17 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.sql.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import java.util.Date;  
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -42,7 +47,11 @@ public class toDoJFrame extends javax.swing.JFrame {
         Tabula.setModel(model);
         conn = toDoJFrame.ConnectDb();
         Tabula.getTableHeader().setFont(new Font("Arial", Font.BOLD, 24));
-        Tabula.getTableHeader().setBackground(Color.white);
+        Tabula.getTableHeader().setBackground(Color.red);
+        Tabula.setFillsViewportHeight(true);
+        
+        
+        
         
         ///izkraso tabula rindas
         Tabula.addMouseListener(new java.awt.event.MouseAdapter(){
@@ -54,19 +63,19 @@ public class toDoJFrame extends javax.swing.JFrame {
                 
                 switch(vertiba){
                     case 5:
-                        Tabula.setSelectionBackground(Color.red);
+                        Tabula.setSelectionBackground(new Color(204, 51, 0));
                         break;
                     case 4:
-                        Tabula.setSelectionBackground(Color.orange);
+                        Tabula.setSelectionBackground(new Color(255, 102, 0));
                         break;
                     case 3:
-                        Tabula.setSelectionBackground(Color.yellow);
+                        Tabula.setSelectionBackground(new Color(204, 204, 0));
                         break;
                     case 2:
-                        Tabula.setSelectionBackground(Color.green);
+                        Tabula.setSelectionBackground(new Color(153, 204, 0));
                         break;
                     case 1:
-                        Tabula.setSelectionBackground(Color.blue);
+                        Tabula.setSelectionBackground(new Color(102, 102, 255));
                         break;
                 }
             }
@@ -297,7 +306,9 @@ public class toDoJFrame extends javax.swing.JFrame {
         jScrollPane1.setViewportView(Tabula);
 
         aprakstaLauks.setColumns(20);
+        aprakstaLauks.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
         aprakstaLauks.setRows(5);
+        aprakstaLauks.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         jScrollPane4.setViewportView(aprakstaLauks);
 
         jLabel4.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
@@ -310,10 +321,8 @@ public class toDoJFrame extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE))
+                    .addComponent(jLabel4)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -367,7 +376,7 @@ public class toDoJFrame extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(dzestPoga, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(labotPoga, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(newTask, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))
+                    .addComponent(newTask, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -429,11 +438,9 @@ public class toDoJFrame extends javax.swing.JFrame {
         //notīra lauciņus
         uzdNosaukums.setText("");
         uzdApraksts.setText("");
-        //vajag ievadīt pareizos value
-        //datumaIevade.setValue();
-        //prioritateIevade.setValue();
         
-        datumaIevade.setEditor(new JSpinner.DateEditor(datumaIevade,"H:m dd/MM/yyyy"));
+        
+        datumaIevade.setEditor(new JSpinner.DateEditor(datumaIevade,"HH:mm dd/MM/yyyy"));
     }//GEN-LAST:event_newTaskActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
@@ -442,48 +449,61 @@ public class toDoJFrame extends javax.swing.JFrame {
 
     private void pogaSaglabatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pogaSaglabatActionPerformed
         if(jDialog1.getTitle().equals("Jauns uzdevums")){
+            
             String sql = "INSERT INTO toDoSQL(Uzdevums,Apraksts,Datums,Prioritāte)VALUES(?,?,?,?)";
-
-            try{
-                pst = conn.prepareStatement(sql);
-                pst.setString(1, uzdNosaukums.getText());
-                pst.setString(2, uzdApraksts.getText());
-                pst.setString(3, String.valueOf(datumaIevade.getValue()));
-                pst.setString(4, String.valueOf(prioritateIevade.getValue()));
-
-                pst.execute();
-
-                JOptionPane.showMessageDialog(null, "Uzdevums pievienots");
-
-                if (rs != null) rs.close();
-                if (pst != null) pst.close();
-
+            
+            //Parbauda, vai ir ievadits uzdevuma nosaukums
+            if(uzdNosaukums.getText().equals("")){
+                JOptionPane.showMessageDialog(null, "Ievadiet uzdevuma nosaukumu", "Nav nosaukuma", JOptionPane.OK_OPTION);
             }
-            catch(Exception e){
-                JOptionPane.showMessageDialog(null, e);
+            else{
+                try{
+                    pst = conn.prepareStatement(sql);
+                    pst.setString(1, uzdNosaukums.getText());
+                    pst.setString(2, uzdApraksts.getText());
+                    pst.setString(3, String.valueOf(new SimpleDateFormat("HH:mm dd/MM/yyyy").format(datumaIevade.getValue())));
+                    pst.setString(4, String.valueOf(prioritateIevade.getValue()));
+
+                    pst.execute();
+
+                    JOptionPane.showMessageDialog(null, "Uzdevums pievienots");
+
+                    if (rs != null) rs.close();
+                    if (pst != null) pst.close();
+
+                }
+                catch(Exception e){
+                    JOptionPane.showMessageDialog(null, e);
+                }
             }
+            //Nodzest uzzimeto tabulu
             while(Tabula.getRowCount() > 0){
                 model.removeRow(0);
             }
 
 
         }else if(jDialog1.getTitle().equals("Labot uzdevumu")){
-                int rinda = Tabula.getSelectedRow();
-                String id = (String) Tabula.getModel().getValueAt(rinda, 4);
-                String sql = "update toDoSQL set "
-                + "Uzdevums = '"+uzdNosaukums.getText()+"', "
-                + "Apraksts = '"+uzdApraksts.getText()+"', "
-                + "Datums = '"+String.valueOf(datumaIevade.getValue())+"', "
-                + "Prioritāte = '"+String.valueOf(prioritateIevade.getValue())+"' "
-                + "where Uzdevums_ID = "+id;
-                
-                try{
-                pst = conn.prepareStatement(sql);
-                pst.execute();
-                JOptionPane.showMessageDialog(null, "Uzdevums labots");
+                if(uzdNosaukums.getText().equals("")){
+                    JOptionPane.showMessageDialog(null, "Ievadiet uzdevuma nosaukumu", "Nav nosaukuma", JOptionPane.OK_OPTION);
                 }
-                catch(Exception e){
-                JOptionPane.showMessageDialog(null, e);
+                else{
+                    int rinda = Tabula.getSelectedRow();
+                    String id = (String) Tabula.getModel().getValueAt(rinda, 4);
+                    String sql = "update toDoSQL set "
+                    + "Uzdevums = '"+uzdNosaukums.getText()+"', "
+                    + "Apraksts = '"+uzdApraksts.getText()+"', "
+                    + "Datums = '"+String.valueOf(new SimpleDateFormat("HH:mm dd/MM/yyyy").format(datumaIevade.getValue()))+"', "
+                    + "Prioritāte = '"+String.valueOf(prioritateIevade.getValue())+"' "
+                    + "where Uzdevums_ID = "+id;
+                
+                    try{
+                        pst = conn.prepareStatement(sql);
+                        pst.execute();
+                        JOptionPane.showMessageDialog(null, "Uzdevums labots");
+                    }
+                    catch(Exception e){
+                        JOptionPane.showMessageDialog(null, e);
+                    }
                 }
             }
             jDialog1.setVisible(false);
@@ -539,17 +559,22 @@ public class toDoJFrame extends javax.swing.JFrame {
         timer.getTime();
         SimpleDateFormat Tdate = new SimpleDateFormat("dd MMM yyyy");
         sodDatums.setText(Tdate.format(timer.getTime()));
-        
-        datumaIevade.setEditor(new JSpinner.DateEditor(datumaIevade,"H:m dd/MM/yyyy"));
-        
+     
+    
         //ievieot datus no tabulas
         int rinda = Tabula.getSelectedRow();
-        String id = (String) Tabula.getModel().getValueAt(rinda, 4);
+        
+        //ievieto prioritates lauka labojamo vertibu
+        prioritateIevade.setValue(Integer.parseInt(Tabula.getModel().getValueAt(rinda, 3).toString()));
+        
+        //ievieto apraksta lauka un nosaukuma lauka vertibu
         uzdNosaukums.setText((String) Tabula.getModel().getValueAt(rinda, 0));
         uzdApraksts.setText((String) Tabula.getModel().getValueAt(rinda, 1));
-        //vajag pārveidot value par pareizo tipu
-//        datumaIevade.setValue(Tabula.getModel().getValueAt(rinda, 2));
-//        prioritateIevade.setValue(Tabula.getModel().getValueAt(rinda, 3));
+        
+        
+        
+        //ievieto datuma labojamo vērtību
+        //datumaIevade.setValue(date);
                
     }//GEN-LAST:event_labotPogaActionPerformed
 
