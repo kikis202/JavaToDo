@@ -475,11 +475,13 @@ public class toDoJFrame extends javax.swing.JFrame {
                 catch(Exception e){
                     JOptionPane.showMessageDialog(null, e);
                 }
+                jDialog1.setVisible(false);
             }
             //Nodzest uzzimeto tabulu
             while(Tabula.getRowCount() > 0){
                 model.removeRow(0);
             }
+            
 
 
         }else if(jDialog1.getTitle().equals("Labot uzdevumu")){
@@ -505,8 +507,9 @@ public class toDoJFrame extends javax.swing.JFrame {
                         JOptionPane.showMessageDialog(null, e);
                     }
                 }
+                jDialog1.setVisible(false);
             }
-            jDialog1.setVisible(false);
+            
             updateTable();
     }//GEN-LAST:event_pogaSaglabatActionPerformed
 
@@ -548,6 +551,7 @@ public class toDoJFrame extends javax.swing.JFrame {
             }
             model.removeRow(Tabula.getSelectedRow());
         }
+        aprakstaLauks.setText("");
     }//GEN-LAST:event_dzestPogaActionPerformed
 
     private void labotPogaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_labotPogaActionPerformed
