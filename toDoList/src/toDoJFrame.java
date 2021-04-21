@@ -40,7 +40,7 @@ public class toDoJFrame extends javax.swing.JFrame {
         this.setTitle("Uzdevumi");
         
         
-        jDialog1.setSize(509, 630);
+        jDialog1.setSize(510, 630);
         jDialog1.setResizable(false);
         Object col[] = {"Uzdevums","Apraksts","Datums","Prioritāte","Uzdevums_ID"};        
         model.setColumnIdentifiers(col);
@@ -49,10 +49,7 @@ public class toDoJFrame extends javax.swing.JFrame {
         Tabula.getTableHeader().setFont(new Font("Arial", Font.BOLD, 24));
         Tabula.getTableHeader().setBackground(Color.red);
         Tabula.setFillsViewportHeight(true);
-        
-        
-        
-        
+
         ///izkraso tabula rindas
         Tabula.addMouseListener(new java.awt.event.MouseAdapter(){
             public void mouseClicked(java.awt.event.MouseEvent e){
@@ -438,6 +435,7 @@ public class toDoJFrame extends javax.swing.JFrame {
         //notīra lauciņus
         uzdNosaukums.setText("");
         uzdApraksts.setText("");
+        prioritateIevade.setValue(1);
         
         
         datumaIevade.setEditor(new JSpinner.DateEditor(datumaIevade,"HH:mm dd/MM/yyyy"));
@@ -458,6 +456,7 @@ public class toDoJFrame extends javax.swing.JFrame {
             }
             else{
                 try{
+                    //Executeo statement, izveidojot jaunu ierakstu db ar attiecīgajām lauku vērtībām
                     pst = conn.prepareStatement(sql);
                     pst.setString(1, uzdNosaukums.getText());
                     pst.setString(2, uzdApraksts.getText());
@@ -475,9 +474,10 @@ public class toDoJFrame extends javax.swing.JFrame {
                 catch(Exception e){
                     JOptionPane.showMessageDialog(null, e);
                 }
+                //Aizver logu
                 jDialog1.setVisible(false);
             }
-            //Nodzest uzzimeto tabulu
+            //Notīra tabulu
             while(Tabula.getRowCount() > 0){
                 model.removeRow(0);
             }
@@ -485,19 +485,23 @@ public class toDoJFrame extends javax.swing.JFrame {
 
 
         }else if(jDialog1.getTitle().equals("Labot uzdevumu")){
+            //Pārbauda vai ir dots uzdevuma nosaukums
                 if(uzdNosaukums.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Ievadiet uzdevuma nosaukumu", "Nav nosaukuma", JOptionPane.OK_OPTION);
                 }
                 else{
+                    //Atrod izvēlēto rindu
                     int rinda = Tabula.getSelectedRow();
+                    //Atrod db key Uzdevums_ID
                     String id = (String) Tabula.getModel().getValueAt(rinda, 4);
+                    //Sagatavo SQL statement datu maiņai
                     String sql = "update toDoSQL set "
                     + "Uzdevums = '"+uzdNosaukums.getText()+"', "
                     + "Apraksts = '"+uzdApraksts.getText()+"', "
                     + "Datums = '"+String.valueOf(new SimpleDateFormat("HH:mm dd/MM/yyyy").format(datumaIevade.getValue()))+"', "
                     + "Prioritāte = '"+String.valueOf(prioritateIevade.getValue())+"' "
                     + "where Uzdevums_ID = "+id;
-                
+                    //Executeo SQL statement
                     try{
                         pst = conn.prepareStatement(sql);
                         pst.execute();
@@ -507,9 +511,9 @@ public class toDoJFrame extends javax.swing.JFrame {
                         JOptionPane.showMessageDialog(null, e);
                     }
                 }
+                //Aizver logu
                 jDialog1.setVisible(false);
             }
-            
             updateTable();
     }//GEN-LAST:event_pogaSaglabatActionPerformed
 
@@ -531,16 +535,21 @@ public class toDoJFrame extends javax.swing.JFrame {
 
     private void dzestPogaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dzestPogaActionPerformed
         DefaultTableModel model = (DefaultTableModel) Tabula.getModel();
+        //Pārbauda vai ir izvēlēta rinda
         if(Tabula.getSelectedRow()==-1){
+            //Pārbauda vai ir dati tabulā
             if(Tabula.getRowCount()==0){
                 JOptionPane.showMessageDialog(null, "Nav uzdevuma, ko dzēst", "Uzdevumi", JOptionPane.OK_OPTION);
             }else{
                 JOptionPane.showMessageDialog(null, "Izvēlies uzdevumu, ko dzēst", "Uzdevumi", JOptionPane.OK_OPTION);
             }
         }else{
+            //Atrod izvēlēto rindu un noslēpto kolonu ar uzdevuma ID vērtību
             int rinda = Tabula.getSelectedRow();
             String id = (String) Tabula.getModel().getValueAt(rinda, 4);
+            //Sagatavo SQL statement
             String sql = "DELETE FROM toDoSQL where Uzdevums_ID = " + id;
+            //Executeo SQL statement, kas izdzēš datus no db
             try{
                 pst = conn.prepareStatement(sql);
                 pst.execute();
@@ -549,12 +558,15 @@ public class toDoJFrame extends javax.swing.JFrame {
             catch(Exception e){
                 JOptionPane.showMessageDialog(null, e);
             }
+            //Vizuāli izdzēš rindu no tabulas
             model.removeRow(Tabula.getSelectedRow());
         }
+        //Notīra apskata lauku
         aprakstaLauks.setText("");
     }//GEN-LAST:event_dzestPogaActionPerformed
 
     private void labotPogaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_labotPogaActionPerformed
+        //Pārsauc jauno logu par "Labot uzdevumu" un padara to par redzamu
         jDialog1.setTitle("Labot uzdevumu");
         jDialog1.setVisible(true);
         
@@ -565,21 +577,13 @@ public class toDoJFrame extends javax.swing.JFrame {
         sodDatums.setText(Tdate.format(timer.getTime()));
      
     
-        //ievieot datus no tabulas
+        //Atrod izvēlēto rindu tabulā
         int rinda = Tabula.getSelectedRow();
         
-        //ievieto prioritates lauka labojamo vertibu
+        //ievieto datus no tabulas attiecīgajos laukos
         prioritateIevade.setValue(Integer.parseInt(Tabula.getModel().getValueAt(rinda, 3).toString()));
-        
-        //ievieto apraksta lauka un nosaukuma lauka vertibu
         uzdNosaukums.setText((String) Tabula.getModel().getValueAt(rinda, 0));
-        uzdApraksts.setText((String) Tabula.getModel().getValueAt(rinda, 1));
-        
-        
-        
-        //ievieto datuma labojamo vērtību
-        //datumaIevade.setValue(date);
-               
+        uzdApraksts.setText((String) Tabula.getModel().getValueAt(rinda, 1));               
     }//GEN-LAST:event_labotPogaActionPerformed
 
     /**
@@ -588,18 +592,20 @@ public class toDoJFrame extends javax.swing.JFrame {
     
     
     
-    
+    //Tabulā importē SQLite db datus
     public void updateTable(){
         DefaultTableModel dtm = (DefaultTableModel) Tabula.getModel();
         dtm.setRowCount(0);
-        
+        //Sagatavo SQL statement, kas izvēlas attiecīgos datus no db
         String sql = "Select Uzdevums,Apraksts,Datums,Prioritāte,Uzdevums_ID from toDoSQL";
         
         try{
+            //Executeo SQL statement
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
+            //Izveido objektu, kurā ievietos datus no db
             Object[] kolonuDati = new Object[5];
-            
+            //Pusho datus no db uz objektu, tālāk uz tabulu
             while(rs.next()){
                 kolonuDati[0] = rs.getString("Uzdevums");
                 kolonuDati[1] = rs.getString("Apraksts");
@@ -609,6 +615,7 @@ public class toDoJFrame extends javax.swing.JFrame {
 
                 model.addRow(kolonuDati);
             }
+            //Padara pēdējo kolonu ar Uzdevums_ID vērtībām neredzamu
                 TableColumnModel tcm = Tabula.getColumnModel();
                 if(tcm.getColumnCount()>4){
                     tcm.removeColumn( tcm.getColumn(4) );
